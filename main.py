@@ -72,10 +72,10 @@ class SnakeGame:
                     self.reset_game()  # Properly restart the game
     
     def show_game_over(self):
-        self.win.fill(BLACK)
+        self.win.fill(WHITE)
         game_over_text = FONT.render("GAME OVER!", True, RED)
-        score_msg = FONT.render(f"Score: {self.score}", True, WHITE)
-        info_msg = FONT.render("Press C to Restart", True, WHITE)
+        score_msg = FONT.render(f"Score: {self.score}", True, BLACK)
+        info_msg = FONT.render("Press C to Restart", True, BLACK)
         
         self.win.blit(info_msg, [WIDTH // 2, HEIGHT // 2 - 50])
         self.win.blit(score_msg, [WIDTH // 2, (HEIGHT // 2) - 20])
@@ -83,7 +83,7 @@ class SnakeGame:
         pygame.display.update()
     
     def show_score(self):
-        score_text = FONT.render(f"Score: {self.score}", True, WHITE)
+        score_text = FONT.render(f"Score: {self.score}", True, BLACK)
         self.win.blit(score_text, [10, 10])
     
     def run(self):
@@ -96,8 +96,8 @@ class SnakeGame:
             if not self.move_snake():
                 continue
             
-            self.win.fill(BLACK)
-            pygame.draw.rect(self.win, GREEN, [self.food[0], self.food[1], BLOCK_SIZE, BLOCK_SIZE])
+            self.win.fill(WHITE)
+            pygame.draw.ellipse(self.win, GREEN, [self.food[0], self.food[1], BLOCK_SIZE, BLOCK_SIZE])
             self.draw_snake()
             self.show_score()
             pygame.display.update()
