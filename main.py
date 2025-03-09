@@ -24,11 +24,15 @@ class SnakeGame:
     def __init__(self):
         self.win = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption("Snake Game")
+        self.reset_game()
+    
+    def reset_game(self):
         self.running = True
         self.snake = [[WIDTH // 2, HEIGHT // 2]]
-        self.dx, self.dy = 0, 0
+        self.dx, self.dy = BLOCK_SIZE, 0  # Start moving to the right
         self.food = self.generate_food()
-        
+        self.game_over = False
+    
     def generate_food(self):
         return [random.randrange(0, WIDTH - BLOCK_SIZE, BLOCK_SIZE),
                 random.randrange(0, HEIGHT - BLOCK_SIZE, BLOCK_SIZE)]
@@ -40,6 +44,7 @@ class SnakeGame:
     def move_snake(self):
         new_head = [self.snake[-1][0] + self.dx, self.snake[-1][1] + self.dy]
         if new_head in self.snake or not (0 <= new_head[0] < WIDTH and 0 <= new_head[1] < HEIGHT):
+            self.game_over = True
             return False
         self.snake.append(new_head)
         if new_head == self.food:
@@ -61,17 +66,31 @@ class SnakeGame:
                     self.dx, self.dy = 0, -BLOCK_SIZE
                 elif event.key == pygame.K_DOWN and self.dy == 0:
                     self.dx, self.dy = 0, BLOCK_SIZE
+                elif event.key == pygame.K_c and self.game_over:
+                    self.reset_game()  # Properly restart the game
+    
+    def show_game_over(self):
+        self.win.fill(BLACK)
+        message = FONT.render("Game Over! Press C to restart", True, RED)
+        self.win.blit(message, [WIDTH // 6, HEIGHT // 3])
+        pygame.display.update()
     
     def run(self):
         while self.running:
             self.handle_events()
+            if self.game_over:
+                self.show_game_over()
+                continue
+            
             if not self.move_snake():
-                self.running = False
+                continue
+            
             self.win.fill(BLACK)
             pygame.draw.rect(self.win, GREEN, [self.food[0], self.food[1], BLOCK_SIZE, BLOCK_SIZE])
             self.draw_snake()
             pygame.display.update()
             CLOCK.tick(SNAKE_SPEED)
+        
         pygame.quit()
 
 if __name__ == "__main__":
