@@ -32,6 +32,7 @@ class SnakeGame:
         self.dx, self.dy = BLOCK_SIZE, 0  # Start moving to the right
         self.food = self.generate_food()
         self.game_over = False
+        self.score = 0
     
     def generate_food(self):
         return [random.randrange(0, WIDTH - BLOCK_SIZE, BLOCK_SIZE),
@@ -49,6 +50,7 @@ class SnakeGame:
         self.snake.append(new_head)
         if new_head == self.food:
             self.food = self.generate_food()
+            self.score += 1
         else:
             self.snake.pop(0)
         return True
@@ -71,9 +73,18 @@ class SnakeGame:
     
     def show_game_over(self):
         self.win.fill(BLACK)
-        message = FONT.render("Game Over! Press C to restart", True, RED)
-        self.win.blit(message, [WIDTH // 6, HEIGHT // 3])
+        game_over_text = FONT.render("GAME OVER!", True, RED)
+        score_msg = FONT.render(f"Score: {self.score}", True, WHITE)
+        info_msg = FONT.render("Press C to Restart", True, WHITE)
+        
+        self.win.blit(info_msg, [WIDTH // 2, HEIGHT // 2 - 50])
+        self.win.blit(score_msg, [WIDTH // 2, (HEIGHT // 2) - 20])
+        self.win.blit(game_over_text, [WIDTH // 2, HEIGHT // 2])
         pygame.display.update()
+    
+    def show_score(self):
+        score_text = FONT.render(f"Score: {self.score}", True, WHITE)
+        self.win.blit(score_text, [10, 10])
     
     def run(self):
         while self.running:
@@ -88,6 +99,7 @@ class SnakeGame:
             self.win.fill(BLACK)
             pygame.draw.rect(self.win, GREEN, [self.food[0], self.food[1], BLOCK_SIZE, BLOCK_SIZE])
             self.draw_snake()
+            self.show_score()
             pygame.display.update()
             CLOCK.tick(SNAKE_SPEED)
         
